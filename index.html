@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伤寒论消消乐</title>
+    
+    <!-- 微信分享所需的meta标签 -->
+    <meta property="og:title" content="伤寒论消消乐 - 中医条文学习游戏" />
+    <meta property="og:description" content="通过游戏方式学习伤寒论条文，提升中医知识水平。选择不同篇章和难度等级进行练习，挑战自我！" />
+    <meta property="og:image" content="https://example.com/shanghan-game-share.jpg" />
+    <meta property="og:url" content="https://example.com/shanghan-game" />
+    
+    <!-- 微信浏览器特定meta标签 -->
+    <meta name="description" content="伤寒论消消乐 - 通过游戏方式学习伤寒论条文" />
+    <meta name="keywords" content="伤寒论,中医,学习游戏,条文练习" />
+    <meta name="author" content="伤寒论消消乐" />
+    
+    <!-- 禁止微信浏览器缩放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 游戏标题和分数显示区域 -->
+        <header class="game-header">
+            <h1 class="game-title">伤寒论消消乐</h1>
+            <div class="score-display">
+                <span>得分: </span>
+                <span id="score">0</span>
+            </div>
+        </header>
+
+        <!-- 10个槽位显示区域 -->
+        <div class="slot-container">
+            <div class="slot-title">已选症状 (最多10个)</div>
+            <div class="slot-area" id="slot-area">
+                <!-- 槽位将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 6×6网格游戏区域 -->
+        <div class="game-grid-container">
+            <div class="game-grid" id="game-grid">
+                <!-- 36个症状格子将通过JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 筛选和控制按钮区域 -->
+    <div class="filter-area">
+        <div class="filter-controls">
+            <label for="category-select">篇章：</label>
+            <select id="category-select" class="filter-select">
+                <option value="all">全部</option>
+                <option value="太阳病">太阳病篇</option>
+                <option value="阳明病">阳明病篇</option>
+                <option value="少阳病">少阳病篇</option>
+                <option value="太阴病">太阴病篇</option>
+                <option value="少阴病">少阴病篇</option>
+                <option value="厥阴病">厥阴病篇</option>
+                <option value="霍乱病">霍乱病篇</option>
+                <option value="阴阳易差后劳复病">阴阳易差后劳复病篇</option>
+            </select>
+            
+            <label for="level-select">等级：</label>
+            <select id="level-select" class="filter-select">
+                <option value="all">全部</option>
+                <option value="1">Ⅰ级</option>
+                <option value="2">Ⅱ级</option>
+                <option value="3">Ⅲ级</option>
+            </select>
+            
+            <button id="apply-filter-btn" class="control-btn">应用筛选</button>
+        </div>
+    </div>
+    
+    <!-- 控制按钮区域 -->
+    <div class="control-area">
+        <button id="new-game-btn" class="control-btn">新游戏</button>
+        <button id="hint-btn-main" class="control-btn">提示 (3/3)</button>
+        <button id="history-btn" class="control-btn">历史记录</button>
+        <button id="wrong-answers-btn" class="control-btn">错题本</button>
+        <button id="share-btn" class="control-btn">分享游戏</button>
+        <button id="help-btn" class="control-btn">帮助</button>
+    </div>
+    </div>
+
+    <!-- 验证弹窗 -->
+    <div class="modal" id="prescription-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">验证方剂</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="article-content" id="article-content"></div>
+                <div class="selected-symptoms" id="selected-symptoms"></div>
+                <div class="prescription-input">
+                    <label for="prescription">请输入方剂名称:</label>
+                    <input type="text" id="prescription" placeholder="例如: 桂枝汤">
+                </div>
+                <div class="modal-buttons">
+                    <button id="hint-btn" class="modal-btn">提示</button>
+                    <button id="submit-btn" class="modal-btn primary">提交</button>
+                    <button id="cancel-btn" class="modal-btn">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史记录弹窗 -->
+    <div class="modal" id="history-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>已匹配条文历史</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 帮助弹窗 -->
+    <div class="modal" id="help-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>游戏帮助</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h4>游戏规则:</h4>
+                <ol>
+                    <li>点击网格中的症状，将其放入槽位</li>
+                    <li>当槽位中出现3个或以上属于同一伤寒论条文的症状时触发验证</li>
+                    <li>≤5个症状的条文：选中3个即可触发验证</li>
+                    <li>5个症状的条文：至少选中5个才触发验证</li>
+                    <li>有方剂的条文需要输入正确的方剂名称</li>
+                    <li>无方剂的条文直接消除成功</li>
+                    <li>槽位满10个且无法消除时游戏结束</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 错题本弹窗 -->
+    <div class="modal" id="wrong-answers-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>错题本</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="wrong-answers-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="control-btn" onclick="clearWrongAnswers()">清空错题本</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 分享选项弹窗 -->
+    <div class="modal" id="share-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>分享游戏</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="share-options">
+                    <!-- 微信分享提示 -->
+                    <div class="share-option wechat-share">
+                        <h4>微信分享</h4>
+                        <p>1. 点击右上角的<span class="wechat-menu-icon">...</span></p>
+                        <p>2. 选择"分享到朋友圈"或"发送给朋友"</p>
+                        <p>3. 添加您的分享语并发送</p>
+                    </div>
+                    
+                    <!-- 复制链接 -->
+                    <div class="share-option copy-link">
+                        <h4>复制链接</h4>
+                        <p>复制以下链接分享给朋友：</p>
+                        <div class="link-container">
+                            <input type="text" id="share-link" value="https://example.com/shanghan-game" readonly>
+                            <button class="control-btn" onclick="copyShareLink()">复制</button>
+                        </div>
+                    </div>
+                    
+                    <!-- 系统分享 -->
+                    <div class="share-option system-share">
+                        <h4>其他分享方式</h4>
+                        <button class="control-btn" id="system-share-btn">使用系统分享</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏结束弹窗 -->
+    <div class="modal" id="game-over-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>游戏结束</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="final-score">最终得分: <span id="final-score">0</span></div>
+                <div class="modal-buttons">
+                    <button id="restart-btn" class="modal-btn primary">重新开始</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引用JavaScript文件 -->
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- 微信JS-SDK（实际部署时需要替换为正式的SDK链接） -->
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+    <script>
+        // 微信JS-SDK配置（实际部署时需要由服务器端生成签名）
+        wx.config({
+            debug: false, // 调试时可设置为true
+            appId: 'your_appid_here', // 公众号的唯一标识
+            timestamp: 'timestamp', // 生成签名的时间戳
+            nonceStr: 'nonceStr', // 生成签名的随机串
+            signature: 'signature', // 生成的签名
+            jsApiList: [ // 需要使用的JS接口列表
+                'updateAppMessageShareData', // 分享给朋友
+                'updateTimelineShareData' // 分享到朋友圈
+            ]
+        });
+        
+        // 微信SDK准备就绪后设置分享内容
+        wx.ready(function() {
+            // 分享给朋友
+            wx.updateAppMessageShareData({
+                title: '伤寒论消消乐 - 中医条文学习游戏', // 分享标题
+                desc: '通过游戏方式学习伤寒论条文，提升中医知识水平。', // 分享描述
+                link: window.location.href, // 分享链接
+                imgUrl: 'https://example.com/shanghan-game-share.jpg', // 分享图标
+                success: function() {
+                    // 设置成功
+                }
+            });
+            
+            // 分享到朋友圈
+            wx.updateTimelineShareData({
+                title: '伤寒论消消乐 - 中医条文学习游戏', // 分享标题
+                link: window.location.href, // 分享链接
+                imgUrl: 'https://example.com/shanghan-game-share.jpg', // 分享图标
+                success: function() {
+                    // 设置成功
+                }
+            });
+        });
+    </script>
+</body>
+</html>

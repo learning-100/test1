@@ -1,0 +1,515 @@
+/* 基础样式和颜色变量 */
+:root {
+    --primary-bg: #f7f3e9; /* 米黄色背景 */
+    --secondary-bg: #e6d5b8; /* 浅棕色背景 */
+    --accent-color: #5d4037; /* 深棕色 */
+    --text-color: #3e2723; /* 深棕黑色文字 */
+    --grid-color: #d7ccc8; /* 网格线颜色 */
+    --symptom-bg: #fff3e0; /* 症状卡片背景 */
+    --symptom-border: #8d6e63; /* 症状卡片边框 */
+    --slot-bg: #ffe0b2; /* 槽位背景 */
+    --modal-bg: #f5f5dc; /* 弹窗背景 */
+    --modal-border: #8d6e63; /* 弹窗边框 */
+    --btn-primary: #5d4037; /* 主要按钮颜色 */
+    --btn-hover: #3e2723; /* 按钮悬停颜色 */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'SimSun', 'STSong', serif; /* 中文字体 */
+}
+
+body {
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* 游戏容器布局 */
+.game-container {
+    max-width: 800px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: var(--secondary-bg);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 标题和分数显示样式 */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--accent-color);
+}
+
+.game-title {
+    font-size: 28px;
+    color: var(--accent-color);
+    text-align: center;
+    flex: 1;
+}
+
+.score-display {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: var(--symptom-bg);
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid var(--symptom-border);
+}
+
+/* 槽位区域样式 */
+.slot-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slot-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.slot-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: var(--slot-bg);
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid var(--accent-color);
+    min-height: 60px;
+}
+
+.slot-item {
+    background-color: var(--symptom-bg);
+    border: 1px solid var(--symptom-border);
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--text-color);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 游戏网格和症状格子样式 */
+.game-grid-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 5px;
+    background-color: var(--grid-color);
+    padding: 10px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1;
+}
+
+.symptom-cell {
+    background-color: var(--symptom-bg);
+    border: 1px solid var(--symptom-border);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.symptom-cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+    background-color: #ffecb3;
+}
+
+/* 提示闪烁效果 */
+@keyframes hintFlash {
+    0% { background-color: #fff3cd; border-color: #ffeaa7; }
+    50% { background-color: #ffeaa7; border-color: #fdcb6e; transform: scale(1.05); }
+    100% { background-color: #fff3cd; border-color: #ffeaa7; }
+}
+
+.hint-flash {
+    animation: hintFlash 0.5s ease-in-out 4;
+    border: 2px solid #fdcb6e;
+    box-shadow: 0 0 10px rgba(253, 203, 110, 0.5);
+}
+
+.symptom-cell.empty {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+    box-shadow: none;
+/* 筛选区域样式 */
+.filter-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f5f0e6;
+    border-radius: 10px;
+    border: 1px solid #d7ccc8;
+}
+
+.filter-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.filter-controls label {
+    font-weight: bold;
+    color: #5d4037;
+    font-size: 16px;
+}
+
+.filter-select {
+    padding: 8px 15px;
+    border: 2px solid #a1887f;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: #5d4037;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-select:hover {
+    border-color: #8d6e63;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: #8d6e63;
+    box-shadow: 0 0 0 3px rgba(141, 110, 99, 0.1);
+}
+
+/* 控制按钮样式 */
+.control-area {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.control-btn {
+    background-color: var(--btn-primary);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: 'SimSun', 'STSong', serif;
+}
+
+.control-btn:hover {
+    background-color: var(--btn-hover);
+}
+
+/* 分享选项样式 */
+.share-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.share-option {
+    background-color: #f5f0e6;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #d7ccc8;
+}
+
+.share-option h4 {
+    color: #5d4037;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.share-option p {
+    margin: 8px 0;
+    line-height: 1.6;
+    color: #795548;
+}
+
+.wechat-menu-icon {
+    display: inline-block;
+    background-color: #5d4037;
+    color: white;
+    padding: 0 8px;
+    border-radius: 3px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.link-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.link-container input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #d7ccc8;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: white;
+    color: #5d4037;
+}
+
+.link-container input:focus {
+    outline: none;
+    border-color: #8d6e63;
+    box-shadow: 0 0 0 3px rgba(141, 110, 99, 0.1);
+}
+
+/* 错题本样式 */
+.wrong-answers-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.wrong-answer-item {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffb300;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wrong-answer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ffe082;
+}
+
+.wrong-answer-date {
+    font-size: 12px;
+    color: #757575;
+    font-style: italic;
+}
+
+.wrong-answer-content p {
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.related-articles ul {
+    margin-top: 5px;
+    padding-left: 20px;
+}
+
+.related-articles li {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* 弹窗样式 */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: var(--modal-bg);
+    border: 3px solid var(--modal-border);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 2px solid var(--modal-border);
+    background-color: var(--secondary-bg);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--accent-color);
+}
+
+.close {
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--accent-color);
+    transition: color 0.2s ease;
+}
+
+.close:hover {
+    color: var(--btn-hover);
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.article-content {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: var(--primary-bg);
+    border-radius: 5px;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.selected-symptoms {
+    margin-bottom: 20px;
+}
+
+.selected-symptoms h4 {
+    margin-bottom: 10px;
+    color: var(--accent-color);
+}
+
+.selected-symptoms .slot-item {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.prescription-input {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.prescription-input label {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.prescription-input input {
+    padding: 10px;
+    border: 1px solid var(--symptom-border);
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: 'SimSun', 'STSong', serif;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-btn {
+    background-color: var(--secondary-bg);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'SimSun', 'STSong', serif;
+}
+
+.modal-btn:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.modal-btn.primary {
+    background-color: var(--btn-primary);
+    color: white;
+    border: none;
+}
+
+.modal-btn.primary:hover {
+    background-color: var(--btn-hover);
+}
+
+.final-score {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    color: var(--accent-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .game-container {
+        padding: 15px;
+    }
+    
+    .game-title {
+        font-size: 24px;
+    }
+    
+    .score-display {
+        font-size: 18px;
+    }
+    
+    .symptom-cell {
+        font-size: 12px;
+        padding: 6px;
+    }
+    
+    .slot-item {
+        font-size: 13px;
+        padding: 6px 10px;
+    }
+    
+    .control-area {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .control-btn {
+        width: 100%;
+        max-width: 200px;
+    }
+}
